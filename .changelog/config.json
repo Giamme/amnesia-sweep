@@ -1,0 +1,46 @@
+{
+  "changelog": "CHANGELOG.md",
+  "heading_format": "## [{version}] - {date}",
+  "group_by_type": true,
+  "tag_format": "v{version}",
+  "versioning": {
+    "preset": "semver-hotfix",
+    "format": "{major}.{minor}.{patch}[.hotfix-{hotfix}]",
+    "bump_rules": {
+      "breaking": "major",
+      "added": "minor",
+      "default": "patch"
+    },
+    "zero_major": true
+  },
+  "version_files": [
+    {
+      "path": "pyproject.toml",
+      "format": "{major}.{minor}.{patch}[.post{hotfix}]"
+    },
+    {
+      "path": "amnesia_sweep/__init__.py",
+      "format": "{major}.{minor}.{patch}[.post{hotfix}]"
+    }
+  ],
+  "whats_new_path": null,
+  "skip_types": [
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "refactor",
+    "style",
+    "test",
+    "tests"
+  ],
+  "ignore": [
+    "^Merge (pull request|branch|remote-tracking branch) ",
+    "^chore\\(release\\)",
+    "^Release v?\\d+\\.\\d+",
+    "^v?\\d+(\\.\\d+)+\\S*$",
+    "\\[(skip|no) changelog\\]"
+  ],
+  "normalize": [],
+  "baseline": null
+}

@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Install the `amnesia-sweep` command by linking ~/.local/bin/amnesia-sweep to this checkout.
+
+Nothing is copied: the link points at bin/amnesia-sweep, so pulling new commits updates the
+command. --uninstall removes the link only if this repo created it.
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import sys
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[1]
+LAUNCHER = REPO / "bin" / "amnesia-sweep"
+NAME = "amnesia-sweep"
+
+
+def ours(path: Path, target: Path) -> bool:
+    return path.is_symlink() and Path(os.readlink(path)).resolve() == target.resolve()
+
+
+def link(path: Path, target: Path, dry_run: bool, force: bool) -> str:
+    if ours(path, target):
+        return f"ok        {path}"
+    if path.exists() or path.is_symlink():
+        if not force:
+            return f"conflict  {path} exists and is not ours (use --force to replace)"
+        if path.is_dir() and not path.is_symlink():
+            return f"conflict  {path} is a directory; remove it yourself"
+        if not dry_run:
+            path.unlink()
+    if not dry_run:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.symlink_to(target)
+    return f"{'would link' if dry_run else 'linked':<9} {path} -> {target}"
+
+
+def unlink(path: Path, target: Path, dry_run: bool) -> str:
+    if not ours(path, target):
+        return f"skip      {path} (not installed by this repo)"
+    if not dry_run:
+        path.unlink()
+    return f"{'would remove' if dry_run else 'removed':<9} {path}"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--uninstall", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--force", action="store_true", help="replace an existing file that isn't our link")
+    args = parser.parse_args()
+
+    shim = Path.home() / ".local" / "bin" / NAME
+    if args.uninstall:
+        print(unlink(shim, LAUNCHER, args.dry_run))
+        return 0
+    if not args.dry_run:
+        LAUNCHER.chmod(LAUNCHER.stat().st_mode | 0o111)
+    print(link(shim, LAUNCHER, args.dry_run, args.force))
+    if str(shim.parent) not in os.environ.get("PATH", "").split(os.pathsep):
+        print(f"note: {shim.parent} is not on PATH; add it to run `{NAME}` directly")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

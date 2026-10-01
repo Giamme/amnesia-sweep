@@ -1,0 +1,61 @@
+{
+  "versions": [
+    {
+      "version": "0.1.0",
+      "date": "2026-10-01",
+      "summary": "First release: find what AI coding agents left on your disk, then delete it or archive it for later.",
+      "entries": [
+        {
+          "type": "added",
+          "text": "See how much disk space AI coding agents have left behind: `amnesia-sweep scan` sizes up Claude Code, OpenClaude and Codex sessions, agent-created git worktrees, old CLI versions, caches and temp files, plus Gemini CLI, Grok, Hermes, opencode, Cursor, Continue, LM Studio and other tools when present.",
+          "breaking": false,
+          "audience": "user",
+          "highlight": true,
+          "commits": [
+            "4f4044a"
+          ]
+        },
+        {
+          "type": "added",
+          "text": "An interactive browser (run `amnesia-sweep` on a terminal) lets you drill down by tool, project and session, mark items to delete or archive, and review exactly what will happen before anything does.",
+          "breaking": false,
+          "audience": "user",
+          "highlight": true,
+          "commits": [
+            "4f4044a"
+          ]
+        },
+        {
+          "type": "added",
+          "text": "Archive things you will probably delete later: nothing is moved or changed, and once the retention period ends (30 days by default, `amnesia-sweep config set retention-days N`) they are offered for deletion on the next run. Anything you touched in the meantime is unarchived automatically.",
+          "breaking": false,
+          "audience": "user",
+          "highlight": true,
+          "commits": [
+            "4f4044a"
+          ]
+        },
+        {
+          "type": "added",
+          "text": "The `scan`, `delete`, `archive`, `sweep`, `config` and `log` commands work without the browser, with `--dry-run`, `--json` output and an audit log of everything removed.",
+          "breaking": false,
+          "audience": "user",
+          "highlight": false,
+          "commits": [
+            "4f4044a"
+          ]
+        },
+        {
+          "type": "added",
+          "text": "Live sessions, running versions, locked or busy worktrees, config, credentials and project memory are never offered for removal; worktrees go through `git worktree remove`, and uncommitted changes need an explicit force.",
+          "breaking": false,
+          "audience": "user",
+          "highlight": false,
+          "commits": [
+            "4f4044a"
+          ]
+        }
+      ]
+    }
+  ]
+}
